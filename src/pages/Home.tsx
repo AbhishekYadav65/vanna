@@ -38,6 +38,16 @@ const ROWS = [
   'quilted, ruffled, zipped',
 ];
 
+/**
+ * Type guard:
+ * tells TypeScript that a filtered value is definitely defined.
+ */
+function isDefined<T>(
+  value: T | undefined | null,
+): value is T {
+  return value !== undefined && value !== null;
+}
+
 function MarqueeRow({
   text,
   reverse,
@@ -54,10 +64,17 @@ function MarqueeRow({
       className={`hero__row ${
         outline ? 'is-outline' : 'is-fill'
       } ${reverse ? 'is-reverse' : ''}`}
-      style={{ '--dur': `${speed}s` } as CSSProperties}
+      style={
+        {
+          '--dur': `${speed}s`,
+        } as CSSProperties
+      }
     >
       {[0, 1].map((c) => (
-        <span key={c} className="hero__row-copy">
+        <span
+          key={c}
+          className="hero__row-copy"
+        >
           {text}&nbsp;&nbsp;
         </span>
       ))}
@@ -65,7 +82,11 @@ function MarqueeRow({
   );
 }
 
-function Starburst({ className }: { className: string }) {
+function Starburst({
+  className,
+}: {
+  className: string;
+}) {
   const pts: string[] = [];
 
   for (let i = 0; i < 16; i++) {
@@ -73,7 +94,9 @@ function Starburst({ className }: { className: string }) {
     const a = (i * Math.PI) / 8;
 
     pts.push(
-      `${50 + r * Math.cos(a)},${50 + r * Math.sin(a)}`
+      `${50 + r * Math.cos(a)},${
+        50 + r * Math.sin(a)
+      }`,
     );
   }
 
@@ -90,6 +113,7 @@ function Starburst({ className }: { className: string }) {
         strokeWidth="3.5"
         strokeLinejoin="round"
       />
+
       <circle
         cx="50"
         cy="50"
@@ -102,7 +126,11 @@ function Starburst({ className }: { className: string }) {
   );
 }
 
-function Squiggle({ className }: { className: string }) {
+function Squiggle({
+  className,
+}: {
+  className: string;
+}) {
   return (
     <svg
       className={`hero__sticker ${className}`}
@@ -116,6 +144,7 @@ function Squiggle({ className }: { className: string }) {
         strokeWidth="12"
         strokeLinecap="round"
       />
+
       <path
         d="M6 30 Q 22 2 38 28 T 70 28 T 102 28 T 134 28 T 154 22"
         fill="none"
@@ -127,7 +156,11 @@ function Squiggle({ className }: { className: string }) {
   );
 }
 
-function Asterisk({ className }: { className: string }) {
+function Asterisk({
+  className,
+}: {
+  className: string;
+}) {
   return (
     <svg
       className={`hero__sticker ${className}`}
@@ -153,14 +186,26 @@ function Asterisk({ className }: { className: string }) {
 }
 
 export default function Home() {
-  const all = productsData.products;
+  /**
+   * Make sure `all` contains only real products.
+   * This fixes the `p is possibly undefined` errors.
+   */
+  const all = productsData.products.filter(isDefined);
 
+  /**
+   * Build hero products and explicitly tell TypeScript
+   * that undefined products have been removed.
+   */
   const heroProducts = useMemo(
     () =>
-      HERO_SLUGS.map((s) =>
-        all.find((p) => p.slug === s)
-      ).filter(Boolean),
-    [all]
+      HERO_SLUGS
+        .map((slug) =>
+          all.find(
+            (product) => product.slug === slug,
+          ),
+        )
+        .filter(isDefined),
+    [all],
   );
 
   const [idx, setIdx] = useState(0);
@@ -168,61 +213,101 @@ export default function Home() {
 
   const heroRef = useRef<HTMLElement>(null);
 
+  /**
+   * `heroProducts[idx]` can technically be undefined
+   * according to TypeScript, so guard it.
+   */
   const hero = heroProducts[idx];
+
+  if (!hero) {
+    return null;
+  }
+
   const ground = getGround(hero.slug);
 
   useEffect(() => {
     if (
       paused ||
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      ).matches
     ) {
       return;
     }
 
     const id = window.setInterval(() => {
       if (!document.hidden) {
-        setIdx((i) => (i + 1) % heroProducts.length);
+        setIdx(
+          (currentIndex) =>
+            (currentIndex + 1) %
+            heroProducts.length,
+        );
       }
     }, 4800);
 
     return () => window.clearInterval(id);
-  }, [paused, idx, heroProducts.length]);
+  }, [paused, heroProducts.length]);
 
-  const onPointerMove = (e: RPointerEvent<HTMLElement>) => {
-    if (e.pointerType !== 'mouse' || !heroRef.current) {
+  const onPointerMove = (
+    e: RPointerEvent<HTMLElement>,
+  ) => {
+    if (
+      e.pointerType !== 'mouse' ||
+      !heroRef.current
+    ) {
       return;
     }
 
-    const r = heroRef.current.getBoundingClientRect();
+    const r =
+      heroRef.current.getBoundingClientRect();
 
-    const px = (e.clientX - r.left) / r.width - 0.5;
-    const py = (e.clientY - r.top) / r.height - 0.5;
+    const px =
+      (e.clientX - r.left) / r.width - 0.5;
 
-    const s = heroRef.current.style;
+    const py =
+      (e.clientY - r.top) / r.height - 0.5;
 
-    s.setProperty(
+    const style = heroRef.current.style;
+
+    style.setProperty(
       '--rx',
-      `${(-py * 12).toFixed(2)}deg`
+      `${(-py * 12).toFixed(2)}deg`,
     );
 
-    s.setProperty(
+    style.setProperty(
       '--ry',
-      `${(px * 16).toFixed(2)}deg`
+      `${(px * 16).toFixed(2)}deg`,
     );
 
-    s.setProperty('--px', px.toFixed(3));
-    s.setProperty('--py', py.toFixed(3));
+    style.setProperty(
+      '--px',
+      px.toFixed(3),
+    );
+
+    style.setProperty(
+      '--py',
+      py.toFixed(3),
+    );
   };
 
   const cats = CATEGORIES.map((c) => {
     const items = all.filter(
-      (p) => getCategorySlug(p.category) === c.slug
+      (product) =>
+        getCategorySlug(product.category) ===
+        c.slug,
     );
 
     return {
       ...c,
       count: items.length,
-      from: Math.min(...items.map((p) => p.price)),
+      from:
+        items.length > 0
+          ? Math.min(
+              ...items.map(
+                (product) => product.price,
+              ),
+            )
+          : 0,
     };
   });
 
@@ -239,19 +324,24 @@ export default function Home() {
 
   const studio = all
     .filter(
-      (p) => !HERO_SLUGS.slice(0, 3).includes(p.slug)
+      (product) =>
+        !HERO_SLUGS
+          .slice(0, 3)
+          .includes(product.slug),
     )
     .slice(0, 6);
 
-  const storyPhoto = all.find(
-    (p) =>
-      p.slug ===
-      'dyson-airwrap-pouch-pink-stripe-ruffle'
-  )!.images[1];
+  const storyProduct = all.find(
+    (product) =>
+      product.slug ===
+      'dyson-airwrap-pouch-pink-stripe-ruffle',
+  );
+
+  const storyPhoto = storyProduct?.images?.[1];
 
   return (
     <div className="home">
-      {/* ─── Hero: one sharp product in the middle of the noise ─── */}
+      {/* ─── Hero ─── */}
       <section
         ref={heroRef}
         className="panel hero"
@@ -263,7 +353,10 @@ export default function Home() {
         }
         onPointerMove={onPointerMove}
       >
-        <div className="hero__chaos" aria-hidden="true">
+        <div
+          className="hero__chaos"
+          aria-hidden="true"
+        >
           <MarqueeRow
             text={ROWS[0]}
             outline
@@ -289,7 +382,10 @@ export default function Home() {
           />
         </div>
 
-        <div className="hero__stickers" aria-hidden="true">
+        <div
+          className="hero__stickers"
+          aria-hidden="true"
+        >
           <Starburst className="hero__s1" />
 
           <Squiggle className="hero__s2" />
@@ -303,7 +399,9 @@ export default function Home() {
           {[...Array(7)].map((_, i) => (
             <i
               key={i}
-              className={`hero__petal hero__petal--${i + 1}`}
+              className={`hero__petal hero__petal--${
+                i + 1
+              }`}
             />
           ))}
         </div>
@@ -352,7 +450,9 @@ export default function Home() {
                   className="hero__product-link"
                 >
                   <img
-                    src={getCutoutUrl(hero.slug)}
+                    src={getCutoutUrl(
+                      hero.slug,
+                    )}
                     alt={hero.images[0].alt}
                     className="hero__cut"
                     draggable={false}
@@ -369,11 +469,15 @@ export default function Home() {
             aria-hidden="true"
           >
             <span className="hero__tag-price">
-              ₹{hero.price.toLocaleString('en-IN')}
+              ₹
+              {hero.price.toLocaleString(
+                'en-IN',
+              )}
             </span>
 
             <span className="hero__tag-name">
-              {hero.name.split(' · ')[1] ?? hero.name}
+              {hero.name.split(' · ')[1] ??
+                hero.name}
             </span>
           </Link>
         </div>
@@ -384,8 +488,9 @@ export default function Home() {
           </h1>
 
           <p className="hero__sub">
-            Hand-stitched quilted pouches from Coimbatore,
-            in colours that clash on purpose.
+            Hand-stitched quilted pouches from
+            Coimbatore, in colours that clash on
+            purpose.
           </p>
 
           <div className="hero__cta">
@@ -407,17 +512,21 @@ export default function Home() {
 
         <div
           className="hero__dots"
-          onPointerEnter={() => setPaused(true)}
-          onPointerLeave={() => setPaused(false)}
+          onPointerEnter={() =>
+            setPaused(true)
+          }
+          onPointerLeave={() =>
+            setPaused(false)
+          }
         >
-          {heroProducts.map((p, i) => (
+          {heroProducts.map((product, i) => (
             <button
-              key={p.slug}
+              key={product.slug}
               type="button"
               className={`hero__dot ${
                 i === idx ? 'is-on' : ''
               }`}
-              aria-label={`Show ${p.name}`}
+              aria-label={`Show ${product.name}`}
               aria-pressed={i === idx}
               onClick={() => setIdx(i)}
             />
@@ -436,7 +545,8 @@ export default function Home() {
         aria-label="Shop by category"
       >
         {cats.map((c) => {
-          const g = CATEGORY_GROUNDS[c.slug];
+          const g =
+            CATEGORY_GROUNDS[c.slug];
 
           return (
             <Link
@@ -456,13 +566,20 @@ export default function Home() {
 
               <p className="trio__meta">
                 {c.count}{' '}
-                {c.count === 1 ? 'pouch' : 'pouches'} from ₹
-                {c.from.toLocaleString('en-IN')}
+                {c.count === 1
+                  ? 'pouch'
+                  : 'pouches'}{' '}
+                from ₹
+                {c.from.toLocaleString(
+                  'en-IN',
+                )}
               </p>
 
               <img
                 className="trio__cut"
-                src={getCutoutUrl(catHero[c.slug])}
+                src={getCutoutUrl(
+                  catHero[c.slug],
+                )}
                 alt=""
                 loading="lazy"
                 decoding="async"
@@ -487,23 +604,29 @@ export default function Home() {
         }
       >
         <div className="story-tease__photo">
-          <img
-            src={getImageUrl(storyPhoto.file)}
-            alt="A quilted Vannam pouch styled on a shelf"
-            loading="lazy"
-          />
+          {storyPhoto && (
+            <img
+              src={getImageUrl(
+                storyPhoto.file,
+              )}
+              alt="A quilted Vannam pouch styled on a shelf"
+              loading="lazy"
+            />
+          )}
         </div>
 
         <div className="story-tease__text">
           <h2>
-            Sewn by hand in Coimbatore, one pouch at a time.
+            Sewn by hand in Coimbatore, one
+            pouch at a time.
           </h2>
 
           <p>
-            Every Vannam pouch blends delightful patterns
-            with protective padding and smart compartments,
-            so your Airwrap barrels, brushes and lipsticks
-            travel safe.
+            Every Vannam pouch blends delightful
+            patterns with protective padding and
+            smart compartments, so your Airwrap
+            barrels, brushes and lipsticks travel
+            safe.
           </p>
 
           <Link
@@ -518,7 +641,9 @@ export default function Home() {
       {/* ─── More from the studio ─── */}
       <section className="panel panel--milk studio">
         <div className="studio__head">
-          <h2>More from the studio</h2>
+          <h2>
+            More from the studio
+          </h2>
 
           <Link
             to="/shop"
@@ -529,10 +654,10 @@ export default function Home() {
         </div>
 
         <div className="studio__grid">
-          {studio.map((p) => (
+          {studio.map((product) => (
             <ProductCard
-              key={p.id}
-              product={p}
+              key={product.id}
+              product={product}
             />
           ))}
         </div>
