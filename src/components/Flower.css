@@ -1,0 +1,3 @@
+.flower { flex: none; overflow: visible; }
+.flower--spin { animation: flower-spin 16s linear infinite; }
+@keyframes flower-spin { to { transform: rotate(360deg); } }

@@ -1,0 +1,86 @@
+.bloom-scrim {
+  position: fixed; inset: 0; z-index: calc(var(--z-bloom) - 1);
+  background: rgba(30, 11, 54, 0.34);
+  backdrop-filter: blur(7px);
+  cursor: default;
+}
+
+.bloom {
+  position: fixed;
+  z-index: var(--z-bloom);
+  left: 50%;
+  bottom: calc(var(--frame) + 12px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+}
+
+.bloom__toggle {
+  position: relative;
+  display: flex; align-items: center; gap: 8px;
+  height: 62px;
+  padding: 0 24px 0 10px;
+  border-radius: 999px;
+  border: 3px solid var(--ink);
+  background: var(--milk);
+  box-shadow: 0 5px 0 var(--ink);
+  transition: transform 0.3s var(--ease-spring), background 0.25s, box-shadow 0.25s;
+}
+.bloom__toggle:hover { transform: translateY(-3px); box-shadow: 0 8px 0 var(--ink); }
+.bloom__toggle:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--ink); }
+.bloom__toggle.is-open { background: var(--hotpink); }
+.bloom__toggle.is-open .bloom__flower { transform: rotate(135deg) scale(1.1); }
+.bloom__flower { transition: transform 0.5s var(--ease-spring); }
+.bloom__toggle-text {
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100;
+  font-weight: 900; font-size: 1.25rem; letter-spacing: -0.01em;
+  min-width: 3.2ch;
+}
+.bloom__toggle.is-bump { animation: bloom-bump 0.6s var(--ease-spring); }
+@keyframes bloom-bump {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.14) rotate(-4deg); }
+  60% { transform: scale(0.96) rotate(2deg); }
+  100% { transform: scale(1); }
+}
+
+.bloom__count {
+  position: absolute; top: -10px; right: -6px;
+  min-width: 26px; height: 26px; padding: 0 7px;
+  display: grid; place-items: center;
+  border-radius: 99px; border: 3px solid var(--ink);
+  background: var(--cherry); color: var(--milk);
+  font-size: 0.8rem; font-weight: 700; line-height: 1;
+}
+
+/* petals fan out from the middle of the toggle */
+.bloom__petals {
+  position: absolute; left: 50%; top: 31px;
+  width: 0; height: 0;
+}
+.bloom__petal {
+  position: absolute; left: 0; top: 0;
+  width: var(--chip); height: var(--chip);
+  margin: calc(var(--chip) / -2) 0 0 calc(var(--chip) / -2);
+}
+.bloom__link {
+  position: relative;
+  width: 100%; height: 100%;
+  display: grid; place-items: center;
+  border: 3px solid var(--ink);
+  box-shadow: 0 4px 0 var(--ink);
+  font-weight: 700; font-size: 0.82rem; line-height: 1;
+  transition: transform 0.25s var(--ease-spring), box-shadow 0.25s;
+}
+.bloom__link:hover { transform: scale(1.12) rotate(-6deg); box-shadow: 0 6px 0 var(--ink); }
+.bloom__chip-count {
+  position: absolute; top: -8px; right: -4px;
+  min-width: 24px; height: 24px; padding: 0 6px;
+  display: grid; place-items: center;
+  border-radius: 99px; border: 3px solid var(--ink);
+  background: var(--cherry); color: var(--milk);
+  font-size: 0.72rem;
+}
+
+@media (min-width: 720px) {
+  .bloom__link { font-size: 0.92rem; }
+}

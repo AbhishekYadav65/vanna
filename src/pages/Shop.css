@@ -1,0 +1,25 @@
+.shop__head { background: var(--g); color: var(--gi); transition: background-color 0.5s; }
+.shop__head-inner { padding: calc(var(--pad) + 40px) var(--pad) var(--pad); display: grid; gap: 16px; }
+.shop__title { font-size: clamp(2.6rem, 9vw, 7.4rem); }
+.shop__count { font-weight: 550; font-size: 1.05rem; }
+.shop__cats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+.shop__head .chip { color: var(--ink); }
+.shop__head .chip.is-active { color: var(--milk); }
+.shop__tools { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: center; justify-content: space-between; margin-top: 4px; }
+.shop__views { display: flex; gap: 10px; }
+.shop__sort { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; }
+.shop__sort select {
+  padding: 0.65em 2.2em 0.65em 1em; border-radius: 99px;
+  border: 3px solid var(--ink); background: var(--milk); color: var(--ink); font-weight: 600;
+  appearance: none; -webkit-appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+  background-position: calc(100% - 20px) 55%, calc(100% - 14px) 55%;
+  background-size: 6px 6px; background-repeat: no-repeat;
+}
+.shop__grid-wrap { padding: clamp(6px, 1.5vw, 18px) clamp(6px, 1.5vw, 18px) calc(var(--frame) + 24px); }
+.shop__grid {
+  display: grid; gap: clamp(16px, 2.6vw, 36px);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+@media (max-width: 1100px) { .shop__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .shop__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 12px; } }

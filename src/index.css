@@ -1,0 +1,180 @@
+/* ══════════════════════════════════════════════════════════
+   VANNAM design system
+   Colour that clashes on purpose. Rounded panels floating
+   inside a paper frame, so nothing ever touches the screen edge.
+   ══════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  /* paper + ink */
+  --paper: #F3EEFF;
+  --ink: #1E0B36;
+  --milk: #FFF6EA;
+  --cherry: #E5163B;
+
+  /* the clash palette (each pouch gets one of these as its ground) */
+  --cobalt: #2D3BFF;
+  --lime: #C9F23B;
+  --tangerine: #FF7A29;
+  --butter: #FFD93D;
+  --emerald: #0F8A5F;
+  --sky: #8CC8FF;
+  --violet: #7B3FF2;
+  --teal: #0EA5A0;
+  --hotpink: #FF4F9A;
+  --tomato: #F2432F;
+  --bubblegum: #FF9CC7;
+  --lilac: #B69CFF;
+
+  --ink-soft: rgba(30, 11, 54, 0.72);
+
+  /* type */
+  --font-display: 'Fraunces Variable', 'Iowan Old Style', Georgia, serif;
+  --font-body: 'Bricolage Grotesque Variable', 'Segoe UI', system-ui, sans-serif;
+  --font-tamil: 'Noto Sans Tamil', var(--font-body);
+
+  /* layout: the frame is the margin between every panel and the screen */
+  --frame: clamp(10px, 1.8vw, 22px);
+  --r-panel: clamp(22px, 3.2vw, 44px);
+  --r-card: clamp(18px, 2vw, 28px);
+  --pad: clamp(22px, 4.5vw, 72px);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --z-wordmark: 80;
+  --z-bloom: 120;
+  --z-overlay: 400;
+  --z-preview: 600;
+  --z-iris: 900;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--ink);
+  background: var(--paper);
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+input, select, textarea { font: inherit; color: inherit; }
+ul, ol { list-style: none; }
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-variation-settings: 'SOFT' 100;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+p { text-wrap: pretty; }
+
+::selection { background: var(--hotpink); color: var(--ink); }
+
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px var(--milk);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--paper); }
+::-webkit-scrollbar-thumb { background: var(--ink); border-radius: 99px; border: 3px solid var(--paper); }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+.skip-link {
+  position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+  z-index: 1200; background: var(--ink); color: var(--milk);
+  padding: 0.7rem 1.2rem; border-radius: 99px; font-weight: 600;
+}
+.skip-link:focus { top: calc(var(--frame) + 8px); }
+
+/* ─── Frame + panels ─── */
+.app {
+  padding: var(--frame);
+  min-height: 100svh;
+}
+
+.panel {
+  position: relative;
+  margin-bottom: var(--frame);
+  border-radius: var(--r-panel);
+  overflow: hidden;
+  isolation: isolate;
+}
+.panel--ink { background: var(--ink); color: var(--milk); }
+.panel--milk { background: var(--milk); }
+.pad { padding: var(--pad); }
+
+/* ─── Buttons ─── */
+.btn {
+  --btn-shadow: var(--hotpink);
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.6em;
+  padding: 0.95em 1.55em;
+  border-radius: 999px;
+  border: 3px solid var(--ink);
+  background: var(--ink);
+  color: var(--milk);
+  font-weight: 650;
+  font-size: 1rem;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 0 0 var(--btn-shadow);
+  transition: transform 0.28s var(--ease-spring), box-shadow 0.28s var(--ease-out), background 0.2s;
+}
+.btn:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--btn-shadow); }
+.btn:active { transform: translate(0, 0); box-shadow: 0 0 0 var(--btn-shadow); }
+.btn--milk { --btn-shadow: var(--ink); background: var(--milk); color: var(--ink); }
+.btn--ghost { --btn-shadow: var(--ink); background: transparent; color: inherit; border-color: currentColor; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 0.4em;
+  padding: 0.5em 1em; border-radius: 999px;
+  border: 2.5px solid var(--ink); background: var(--milk);
+  font-weight: 600; font-size: 0.95rem; line-height: 1;
+  transition: transform 0.25s var(--ease-spring), background 0.2s, color 0.2s;
+}
+.chip:hover { transform: translateY(-2px) rotate(-1.5deg); }
+.chip.is-active { background: var(--ink); color: var(--milk); }
+
+/* ─── Petals (spawned by lib/petals.ts) ─── */
+.petal-layer { position: fixed; inset: 0; pointer-events: none; z-index: 950; overflow: hidden; }
+.petal {
+  position: fixed; left: 0; top: 0;
+  border-radius: 100% 0 100% 0;
+  box-shadow: inset -2px -2px 0 rgba(30, 11, 54, 0.18);
+  will-change: transform, opacity;
+}
+
+/* ─── Product ground helper (cards, carousel, preview all use it) ─── */
+.ground { background: var(--g, var(--cobalt)); color: var(--gi, var(--milk)); }
+
+/* ─── Motion safety ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

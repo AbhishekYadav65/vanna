@@ -1,0 +1,120 @@
+.footer {
+  padding: var(--pad);
+  padding-bottom: calc(var(--pad) + 96px);
+  margin-bottom: 0;
+}
+
+.footer__grid {
+  display: grid;
+  gap: clamp(28px, 4vw, 64px);
+  grid-template-columns: minmax(0, 1.6fr) repeat(2, minmax(0, 1fr));
+}
+
+.footer__brand {
+  display: grid;
+  gap: 20px;
+  justify-items: start;
+}
+
+.footer__tag {
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100;
+  font-weight: 800;
+  font-size: clamp(1.4rem, 2.6vw, 2.2rem);
+  line-height: 1.1;
+  max-width: 18ch;
+}
+
+.footer__col h3 {
+  font-size: 1.25rem;
+  margin-bottom: 14px;
+  color: var(--butter);
+}
+
+.footer__col ul {
+  display: grid;
+  gap: 8px;
+}
+
+.footer__col a {
+  font-weight: 500;
+  transition:
+    color 0.2s,
+    padding-left 0.25s var(--ease-out);
+}
+
+.footer__col a:hover {
+  color: var(--hotpink);
+  padding-left: 6px;
+}
+
+/* Giant Vannam wordmark */
+.footer__giant {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 28px);
+  margin-top: clamp(32px, 6vw, 80px);
+
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100;
+  font-weight: 900;
+  font-size: clamp(4.5rem, 21vw, 19rem);
+  line-height: 0.8;
+  letter-spacing: -0.045em;
+  color: var(--hotpink);
+  user-select: none;
+}
+
+.footer__giant span {
+  transform: translateX(-20px);
+}
+
+.footer__flower {
+  width: 0.55em;
+  height: 0.55em;
+}
+
+.footer__legal {
+  margin-top: 24px;
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+/* Tablet */
+@media (max-width: 760px) {
+  .footer__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .footer__brand {
+    grid-column: 1 / -1;
+  }
+
+  .footer__giant {
+    gap: 8px;
+    font-size: 17vw;
+    margin-top: 44px;
+  }
+
+  .footer__giant span {
+    transform: translateX(-4px);
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .footer__giant {
+    gap: 6px;
+    font-size: 17vw;
+    letter-spacing: -0.055em;
+    white-space: nowrap;
+  }
+
+  .footer__giant span {
+    transform: translateX(-2px);
+  }
+
+  .footer__flower {
+    flex: 0 0 auto;
+  }
+}

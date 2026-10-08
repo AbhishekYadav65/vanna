@@ -1,0 +1,5 @@
+.iris {
+  display: none;
+  position: fixed; inset: 0; z-index: var(--z-iris);
+  pointer-events: none;
+}
